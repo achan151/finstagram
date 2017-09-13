@@ -44,6 +44,7 @@ post '/signup' do
     
     if @user.save
         redirect to('/login')
+    
     else
         erb(:signup)
     end
@@ -57,5 +58,27 @@ end
 get '/' do
     @posts = Post.order(created_at: :desc)
     erb(:index)
+end
+
+get '/posts/new' do
+    @post = Post.new
+    erb(:"posts/new")
+end
+
+post '/posts' do
+    photo_url = params[:photo_url]
+    
+    @post = Post.new({ photo_url: photo_url, user_id: current_user.id })
+    
+    if @post.save
+        redirect(to('/'))
+    else
+        erb(:"posts/new")
+    end
+end
+
+get '/posts/:id' do
+    @post = Post.find(params[:id]) # find the post with the ID from the URL
+    erb(:"posts/show") # render app/views/posts/show.erb
 end
 
